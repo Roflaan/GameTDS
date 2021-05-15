@@ -40,7 +40,7 @@ Bullet::Bullet(QPointF start, QPointF end, QObject *parent)
     timerBullet = new QTimer();
     // И подключаем его к слоту для обработки полёта пули
     connect(timerBullet, &QTimer::timeout, this, &Bullet::slotTimerBullet);
-    timerBullet->start(10);
+    timerBullet->start(15);
 }
 
 Bullet::~Bullet()
@@ -55,7 +55,7 @@ Bullet::~Bullet()
 
 QRectF Bullet::boundingRect() const
 {
-    return QRectF(-30,-30,60,60);//НУЖНО ИСПРАВИТЬ
+    return QRectF(-10,-10,20,20);//НУЖНО ИСПРАВИТЬ
 }
 
 void Bullet::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -70,38 +70,24 @@ void Bullet::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 
 void Bullet::slotTimerBullet()
 {
-    setPos(mapToParent(0, -25));
+    setPos(mapToParent(0, -55));
 
     /* Проверка выхода за границы поля
      * Если пуля вылетает за заданные границы, то пулю необходимо уничтожить
      * */
-    if(this->x() < -5000){
+    if(this->x() < -3000){
         this->deleteLater();
     }
-    if(this->x() > 5000){
-        this->deleteLater();
-    }
-
-    if(this->y() < -5000){
-        this->deleteLater();
-    }
-    if(this->y() > 5000){
+    if(this->x() > 3000){
         this->deleteLater();
     }
 
-//    QList<QGraphicsItem *> foundItems = scene()->items(QPolygonF()
-//                                                           << mapToScene(0, 0)
-//                                                           << mapToScene(-1, -1)
-//                                                           << mapToScene(1, -1));
-//    /* После чего проверяем все элементы.
-//     * Одними из них будут сама Пуля и Герой - с ними ничего не делаем.
-//     * А с остальными вызываем CallBack функцию
-//     * */
-//    foreach (QGraphicsItem *item, foundItems) {
-//        if (item == this || item == human)
-//            continue;
-//        callbackFunc(item);     // Вызываем CallBack функцию
-//        this->deleteLater();    // Уничтожаем пулю
+    if(this->y() < -3000){
+        this->deleteLater();
+    }
+    if(this->y() > 3000){
+        this->deleteLater();
+    }
 
 
     QList<QGraphicsItem *> colliding = scene()->collidingItems(this);

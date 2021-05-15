@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QTimer>
+#include <QThread>
 #include <QPen>
 #include "human.h"
 #include <windows.h>
@@ -13,12 +14,14 @@
 #include <QGraphicsView>
 #include "ui_widget.h"
 #include "bullet.h"
+#include <QFuture>
+#include <QtConcurrent/QtConcurrent>
 #pragma comment(lib, "user32.lib")
+using namespace std;
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
 {
-    // Устанавливаем параметры окна приложения
     this->resize(1280,720);
     this->setFixedSize(1280,720);
     this->setFixedSize(1920,1080);
@@ -27,15 +30,12 @@ Widget::Widget(QWidget *parent) :
     scene   = new CustomScene();    // Инициализируем кастомизированную сцену
 
     ui->graphicsView->setScene(scene);  /// Устанавливаем графическую сцену в graphicsView
-    ui->graphicsView->setRenderHint(QPainter::Antialiasing);    /// Устанавливаем сглаживание
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff); /// Отключаем скроллбар по вертикали
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff); /// Отключаем скроллбар по горизонтали
 
-//    scene->addEllipse(100,100, 100, 100);
-//    scene->addLine(0,0,6000,6000);
-    // Создаем кастомизированный курсор из ресурсного файла
     QCursor cursor = QCursor(QPixmap("cursorTarget.png"));
     ui->graphicsView->setCursor(cursor);    // Устанавливаем курсор в QGraphicsView
+//    ui->graphicsView->setCursor(Qt::BlankCursor);
     h=new Human();
     h->setPos(650,350);
     scene->addItem(h);
@@ -45,8 +45,14 @@ Widget::Widget(QWidget *parent) :
     timer = new QTimer(this);
     connect(timer,SIGNAL(timeout()),this,SLOT(update()));
     connect(timer,SIGNAL(timeout()),h,SLOT(slotGameTimer()));
-    timer->start(10);
+    timer->start(15);
+
     connect(scene, &CustomScene::signalTargetCoordinate, h, &Human::slotTarget);
+
+    levelTimer = new QTimer(this);
+    connect(levelTimer,SIGNAL(timeout()),this,SLOT(levels()));
+    levelTimer->start(1000);
+
 
     z=new Zombie();
     z->setPos(0,0);
@@ -54,27 +60,6 @@ Widget::Widget(QWidget *parent) :
     scene->addItem(zombies[0]);
 
 
-    z=new Zombie();
-    z->setPos(500,500);
-    zombies.append(z);
-    scene->addItem(zombies[1]);
-
-
-    z=new Zombie();
-    z->setPos(250,0);
-    zombies.append(z);
-    scene->addItem(zombies[2]);
-
-    connect(h, &Human::signalPlayerCoordinate, zombies[0], &Zombie::move);
-    connect(h, &Human::signalPlayerCoordinate, zombies[1], &Zombie::move);
-    connect(h, &Human::signalPlayerCoordinate, zombies[2], &Zombie::move);
-
-
-
-    scene->addLine(-1500,-1500,1500,-1500);
-    scene->addLine(-1500,-1500,-1500,1500);
-    scene->addLine(-1500,1500,1500,1500);
-    scene->addLine(1500,-1500,1500,1500);
 
     QBrush b(QPixmap("map1.jpeg").scaled(size()));
     scene->setBackgroundBrush(b);
@@ -82,15 +67,25 @@ Widget::Widget(QWidget *parent) :
     b={QPixmap("fog.png").scaled(size())};
     scene->setForegroundBrush(b);
 
+
+
 }
 
 
 void Widget::update()
 {
+    QElapsedTimer timer;
+    timer.start();
     QRect rect(h->pos().rx(),h->pos().ry(),55,55);
     scene->setSceneRect(rect);
     QPointF k={h->pos().y()-z->pos().y(),h->pos().x()-z->pos().x()};
+    QPoint s(0,0);
+
+    for(int i=0; i<zombies.size();i++)
+        zombies.at(i)->move(QPoint(h->x(),h->y()));
+    qDebug() << "The slow operation took" << timer.elapsed() << "milliseconds";
 }
+
 
 void Widget::hit(QGraphicsItem *b)
 {
@@ -99,8 +94,18 @@ void Widget::hit(QGraphicsItem *b)
             Zombie *t = qgraphicsitem_cast <Zombie *> (targ);
             t->hit(50);
         }
-//        repaint();
+    }
+}
 
+void Widget::levels()
+{
+    static int o=0;
+    while(o<20){
+    z=new Zombie();
+    z->setPos(qrand()%3000,qrand()%3000);
+    zombies.append(z);
+    scene->addItem(zombies[zombies.size()-1]);
+    o=o+1;
     }
 }
 

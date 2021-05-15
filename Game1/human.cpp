@@ -35,13 +35,15 @@ QRectF Human::boundingRect() const
 
 void Human::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+
 //    QPolygon polygon;   // Используем класс полигона, чтобы отрисовать треугольник
 //    // Помещаем координаты точек в полигональную модель
 //    polygon << QPoint(0,-40) << QPoint(25,40) << QPoint(-25,40);
 //    painter->setBrush(Qt::red);     // Устанавливаем кисть, которой будем отрисовывать объект
     if (shotEffect)
-        painter->drawPixmap(-50,-50,100,100,QPixmap("shot.png"));;
-    painter->drawPixmap(-50,-50,100,100,QPixmap("mc.png"));
+        painter->drawPixmap(-50,-50,100,100,QPixmap("shot.png"));
+    else
+        painter->drawPixmap(-50,-50,100,100,QPixmap("mc.png"));
 //    painter->drawRect(-50,-50,100,100);
 //    Q_UNUSED(option);
     //    Q_UNUSED(widget);
@@ -70,6 +72,7 @@ void Human::slotTarget(QPointF point)
         // Rotate right
         setRotation(rotation() + (angleToTarget - TwoPi )* (-180) /Pi);
     }
+
 }
 
 

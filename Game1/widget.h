@@ -8,7 +8,8 @@
 #include <QTimer>
 #include <customscene.h>
 #include <bullet.h>
-#include <zombie.h>>
+#include <zombie.h>
+#include <QThread>
 
 namespace Ui {
 class Widget;
@@ -23,10 +24,12 @@ public:
     ~Widget();
 
 
+
 public slots:
     void mousePressEvent(QMouseEvent *event);
     void update();
     void hit(QGraphicsItem *b);
+    void levels();
 
 private:
     Ui::Widget *ui;
@@ -36,10 +39,9 @@ private:
     Bullet* b;
     int mouseX, mouseY;
     QTimer* timer;
-    QVector<Zombie*>zombies;
+    QTimer* levelTimer;
+    QList<Zombie*>zombies;
     QVector<Bullet*>Bullets;
-
-
 };
 
 #endif // WIDGET_H
