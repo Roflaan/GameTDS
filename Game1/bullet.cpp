@@ -36,7 +36,6 @@ Bullet::Bullet(QPointF start, QPointF end, QObject *parent)
         /// Rotate right
         setRotation(rotation() + (angleToTarget - TwoPi )* (-180) /Pi);
     }
-    setPos(mapToParent(10, -40));
     // Инициализируем полётный таймер
     timerBullet = new QTimer();
     // И подключаем его к слоту для обработки полёта пули
@@ -61,7 +60,7 @@ QRectF Bullet::boundingRect() const
 
 void Bullet::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    painter->setPen(Qt::black);
+    painter->setPen(Qt::yellow);
     painter->setBrush(Qt::yellow);
     painter->drawEllipse(-4,-4,8,8);
 
@@ -71,7 +70,7 @@ void Bullet::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 
 void Bullet::slotTimerBullet()
 {
-    setPos(mapToParent(0, -50));
+    setPos(mapToParent(0, -55));
 
     /* Проверка выхода за границы поля
      * Если пуля вылетает за заданные границы, то пулю необходимо уничтожить

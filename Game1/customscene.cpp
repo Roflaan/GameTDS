@@ -17,5 +17,3 @@ void CustomScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 }
 
 
-
-
