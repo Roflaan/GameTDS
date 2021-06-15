@@ -81,29 +81,21 @@ void Human::slotTarget(QPointF point)
 
 void Human::slotGameTimer()
 {
-    if(GetAsyncKeyState('A')){
-        this->setX(this->x() - 3);
-        target.rx()-=3;
-//        if(!scene()->collidingItems(this).isEmpty())
-//                    this->setX(this->x() + 3);
+    if(GetAsyncKeyState('A') && this->x()>1){
+        this->setX(this->x() - speed);
+        target.rx()-=speed;
     }
-    if(GetAsyncKeyState('D')){
-        this->setX(this->x() + 3);
-        target.rx()+=3;
-//        if(!scene()->collidingItems(this).isEmpty())
-//                    this->setX(this->x() - 3);
+    if(GetAsyncKeyState('D') && this->x()<2999){
+        this->setX(this->x() + speed);
+        target.rx()+=speed;
     }
-    if(GetAsyncKeyState('W')){
-        this->setY(this->y() - 3);
-        target.ry()-=3;
-//        if(!scene()->collidingItems(this).isEmpty())
-//                    this->setY(this->y() + 3);
+    if(GetAsyncKeyState('W') && this->y()>1){
+        this->setY(this->y() - speed);
+        target.ry()-=speed;
     }
-    if(GetAsyncKeyState('S')){
-        this->setY(this->y() + 3);
-        target.ry()+=3;
-//        if(!scene()->collidingItems(this).isEmpty())
-//                    this->setY(this->y() - 3);
+    if(GetAsyncKeyState('S')&& this->y()<2999){
+        this->setY(this->y() + speed);
+        target.ry()+=speed;
     }
 
 
@@ -130,6 +122,46 @@ void Human::slotGameTimer()
 
 }
 
+int Human::getMoney() const
+{
+    return money;
+}
+
+void Human::setMoney(int value)
+{
+    money = value;
+}
+
+int Human::getAmmoSum() const
+{
+    return ammoSum;
+}
+
+void Human::setAmmoSum(int value)
+{
+    ammoSum = value;
+}
+
+int Human::getHp() const
+{
+    return hp;
+}
+
+void Human::setHp(int value)
+{
+    hp = value;
+}
+
+int Human::getAmmoP() const
+{
+    return ammoP;
+}
+
+void Human::setAmmoP(int value)
+{
+    ammoP = value;
+}
+
 void Human::shot()
 {
     shotEffect=true;
@@ -137,7 +169,7 @@ void Human::shot()
     fireTimer = new QTimer();
     connect(fireTimer, &QTimer::timeout, this, &Human::shotEnd);
     this->update();
-    fireTimer->start(100);
+    fireTimer->start(70);
 }
 
 void Human::shotEnd()
