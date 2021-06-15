@@ -10,6 +10,8 @@
 #include <bullet.h>
 #include <zombie.h>
 #include <QThread>
+#include <QFont>
+#include <QSound>
 
 namespace Ui {
 class Widget;
@@ -22,7 +24,7 @@ class Widget : public QWidget
 public:
     explicit Widget(QWidget *parent = 0);
     ~Widget();
-
+    void keyPressEvent(QKeyEvent *e);
 
 
 public slots:
@@ -40,8 +42,14 @@ private:
     int mouseX, mouseY;
     QTimer* timer;
     QTimer* levelTimer;
+    QTimer* timerreload;
     QList<Zombie*>zombies;
     QVector<Bullet*>Bullets;
+    QGraphicsTextItem* hp;
+    QGraphicsTextItem* ammo;
+    QGraphicsTextItem* tm;
+    QFont font;
+    int time=0;
 };
 
 #endif // WIDGET_H

@@ -24,6 +24,11 @@ Zombie::Zombie(QObject *parent)
     setCacheMode(QGraphicsItem::ItemCoordinateCache);
 }
 
+Zombie::~Zombie()
+{
+
+}
+
 void Zombie::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     if (hp<=0)
@@ -60,6 +65,26 @@ void Zombie::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 
 }
 
+int Zombie::getTime() const
+{
+    return time;
+}
+
+void Zombie::setTime(int value)
+{
+    time = value;
+}
+
+void Zombie::setAnimationstage(int value)
+{
+    animationstage = value;
+}
+
+int Zombie::getAnimationstage() const
+{
+    return animationstage;
+}
+
 int Zombie::getHp() const
 {
     return hp;
@@ -81,7 +106,7 @@ QRectF Zombie::boundingRect() const
 void Zombie::move(QPointF h)
 {
     if (hp>0 && !attackflag){
-        if ((h.x()-this->x())*(h.x()-this->x())+(h.y()-this->y())*(h.y()-this->y())<=14400){
+        if ((h.x()-this->x())*(h.x()-this->x())+(h.y()-this->y())*(h.y()-this->y())<=10000){
             timer=new QTimer(this);
             connect(timer,SIGNAL(timeout()),this,SLOT(attack()));
             this->attack();
@@ -90,55 +115,59 @@ void Zombie::move(QPointF h)
         }
         else{
             if(this->x()<h.x()){
-                this->setX(this->x()+1);
+                this->setX(this->x()+speed);
                 QPoint a(this->x()+50,this->y()+50);
                 for (int i=0; i<scene()->items().size(); i++)
                 {
                     QPoint b(scene()->items().at(i)->x()+50,scene()->items().at(i)->y()+50);
-                    if ((a.x()-b.x())*(a.x()-b.x())+(a.y()-b.y())*(a.y()-b.y())<=4*50*50 &&   scene()->items().at(i)!=this && (dynamic_cast <Zombie*> (scene()->items().at(i)))){
-                        if (dynamic_cast<Zombie*> (scene()->items().at(i))->getHp()>0)
-                        this->setX(this->x() - 1);
+                    if ((a.x()-b.x())*(a.x()-b.x())+(a.y()-b.y())*(a.y()-b.y())<=2*50*50 &&   scene()->items().at(i)!=this && (dynamic_cast <Zombie*> (scene()->items().at(i)))){
+                        if (dynamic_cast<Zombie*> (scene()->items().at(i))->getHp()>0){
+                        this->setX(this->x() - speed);
                         break;
+                        }
                     }
                 }
 
             }
             if(this->x()>h.x()){
-                this->setX(this->x()-1);
+                this->setX(this->x()-speed);
                 QPoint a(this->x()+50,this->y()+50);
                 for (int i=0; i<scene()->items().size(); i++)
                 {
                     QPoint b(scene()->items().at(i)->x()+50,scene()->items().at(i)->y()+50);
-                    if (    (a.x()-b.x())*(a.x()-b.x())+(a.y()-b.y())*(a.y()-b.y())<=4*50*50 &&   scene()->items().at(i)!=this && (dynamic_cast<Zombie*> (scene()->items().at(i)))){
-                        if (dynamic_cast<Zombie*> (scene()->items().at(i))->getHp()>0)
-                        this->setX(this->x() + 1);
+                    if (    (a.x()-b.x())*(a.x()-b.x())+(a.y()-b.y())*(a.y()-b.y())<=2*50*50 &&   scene()->items().at(i)!=this && (dynamic_cast<Zombie*> (scene()->items().at(i)))){
+                        if (dynamic_cast<Zombie*> (scene()->items().at(i))->getHp()>0){
+                        this->setX(this->x() + speed);
                         break;
+                        }
                     }
                 }
             }
             if(this->y()<h.y()){
-                this->setY(this->y()+1);
+                this->setY(this->y()+speed);
                 QPoint a(this->x()+50,this->y()+50);
                 for (int i=0; i<scene()->items().size(); i++)
                 {
                     QPoint b(scene()->items().at(i)->x()+50,scene()->items().at(i)->y()+50);
-                    if (    (a.x()-b.x())*(a.x()-b.x())+(a.y()-b.y())*(a.y()-b.y())<=4*50*50 &&   scene()->items().at(i)!=this && (dynamic_cast<Zombie*> (scene()->items().at(i)))){
-                        if (dynamic_cast<Zombie*> (scene()->items().at(i))->getHp()>0)
-                            this->setY(this->y() - 1);
-                        break;
+                    if (    (a.x()-b.x())*(a.x()-b.x())+(a.y()-b.y())*(a.y()-b.y())<=2*50*50 &&   scene()->items().at(i)!=this && (dynamic_cast<Zombie*> (scene()->items().at(i)))){
+                        if (dynamic_cast<Zombie*> (scene()->items().at(i))->getHp()>0){
+                            this->setY(this->y() - speed);
+                            break;
+                        }
                     }
                 }
             }
             if(this->y()>h.y()){
-                this->setY(this->y()-1);
+                this->setY(this->y()-speed);
                 QPoint a(this->x()+50,this->y()+50);
                 for (int i=0; i<scene()->items().size(); i++)
                 {
                     QPoint b(scene()->items().at(i)->x()+50,scene()->items().at(i)->y()+50);
-                    if (    (a.x()-b.x())*(a.x()-b.x())+(a.y()-b.y())*(a.y()-b.y())<=4*50*50 &&   scene()->items().at(i)!=this && (dynamic_cast<Zombie*> (scene()->items().at(i)))){
-                        if (dynamic_cast<Zombie*> (scene()->items().at(i))->getHp()>0)
-                        this->setY(this->y() + 1);
-                        break;
+                    if (    (a.x()-b.x())*(a.x()-b.x())+(a.y()-b.y())*(a.y()-b.y())<=2*50*50 &&   scene()->items().at(i)!=this && (dynamic_cast<Zombie*> (scene()->items().at(i)))){
+                        if (dynamic_cast<Zombie*> (scene()->items().at(i))->getHp()>0){
+                            this->setY(this->y() + speed);
+                            break;
+                        }
                     }
 
                 }
@@ -172,7 +201,7 @@ QPainterPath Zombie::shape() const
 {
     QPainterPath path;
     if (hp>0){
-        path.addRect(boundingRect());
+        path.addEllipse(boundingRect());
         return path;
     }
     else
@@ -182,8 +211,13 @@ QPainterPath Zombie::shape() const
 void Zombie::hit(int damage)
 {
     hp -= damage;
-    qDebug()<<hp;
     this->update();
+    if(hp<=0){
+        QSound::play("z1.wav");
+        timer = new QTimer(this);
+        timer->start(1000);
+        connect(timer,SIGNAL(timeout()),this,SLOT(del()));
+    }
 
 }
 
@@ -196,5 +230,10 @@ void Zombie::attack()
         timer->stop();
     }
     this->update();
+}
+
+void Zombie::del()
+{
+    time++;
 }
 
